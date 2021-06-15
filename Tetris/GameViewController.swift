@@ -18,7 +18,7 @@ class GameViewController: UIViewController{
     lazy var gameGridView: GameView = {
         let x = spacingWidth
         let y = paddingUp
-        let width = UIScreen.main.bounds.width - spacingWidth - paddingRight
+        let width = UIScreen.main.bounds.width - spacingWidth // - paddingRight
         let height = UIScreen.main.bounds.height - paddingUp - paddingDown
         var gameGridView = GameView(frame: CGRect(x: x, y: y, width: width, height: height))
         return gameGridView

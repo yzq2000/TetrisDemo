@@ -23,9 +23,57 @@ struct TetrisBlock {
     }
 }
 
+let columnCount = 15
+let rowCount = 24
+let blockArray: [[TetrisBlock]] = [
+    [   // Z
+        TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.red.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.red.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.red.cgColor),
+        TetrisBlock(x: columnCount / 2 + 1, y: 1, color: UIColor.red.cgColor)
+        
+    ],
+    [   // 反Z
+        TetrisBlock(x: columnCount / 2 + 1, y: 0, color: UIColor.yellow.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.yellow.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.yellow.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.yellow.cgColor)
+    ],
+    [   // 田
+        TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.green.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.green.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.green.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.green.cgColor)
+        
+    ],
+    [   // L
+        TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.blue.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.blue.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 2, color: UIColor.blue.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.blue.cgColor)
+    ],
+    [   // J
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.orange.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.orange.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.orange.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 2, color: UIColor.orange.cgColor)
+        
+    ],
+    [   // 一
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.purple.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.purple.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.purple.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 3, color: UIColor.purple.cgColor)
+    ],
+    [   // 十缺个角
+        TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.systemPink.cgColor),
+        TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.systemPink.cgColor),
+        TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.systemPink.cgColor),
+        TetrisBlock(x: columnCount / 2 + 1, y: 1, color: UIColor.systemPink.cgColor)
+    ]
+]
+
 class GameView: UIView{
-    let columnCount = 15
-    let rowCount = 24
     let NOBLOCK = UIColor.white.cgColor
     let blockWidth: Int
     
@@ -37,8 +85,9 @@ class GameView: UIView{
     
     var currentScore: Int = 0
     
+    var nextBlockID: Int = Int(arc4random()) % blockArray.count
+    
     var currentBlock = [TetrisBlock]()
-    var blockArray = [[TetrisBlock]]()
     
     var colorStatus = [[CGColor]]()
     
@@ -55,55 +104,7 @@ class GameView: UIView{
     }
     
     override init(frame: CGRect) {
-        self.blockArray = [
-            [   // Z
-                TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.red.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.red.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.red.cgColor),
-                TetrisBlock(x: columnCount / 2 + 1, y: 1, color: UIColor.red.cgColor)
-                
-            ],
-            [   // 反Z
-                TetrisBlock(x: columnCount / 2 + 1, y: 0, color: UIColor.yellow.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.yellow.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.yellow.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.yellow.cgColor)
-            ],
-            [   // 田
-                TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.green.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.green.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.green.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.green.cgColor)
-                
-            ],
-            [   // L
-                TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.blue.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.blue.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 2, color: UIColor.blue.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.blue.cgColor)
-            ],
-            [   // J
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.orange.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.orange.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.orange.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 2, color: UIColor.orange.cgColor)
-                
-            ],
-            [   // 一
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.purple.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.purple.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.purple.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 3, color: UIColor.purple.cgColor)
-            ],
-            [   // 十缺个角
-                TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.systemPink.cgColor),
-                TetrisBlock(x: columnCount / 2 - 1, y: 1, color: UIColor.systemPink.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.systemPink.cgColor),
-                TetrisBlock(x: columnCount / 2 + 1, y: 1, color: UIColor.systemPink.cgColor)
-            ]
-        ]
-        
-        self.blockWidth = Int(frame.width) / columnCount
+        self.blockWidth = Int(frame.width - 100) / columnCount
         super.init(frame: frame)
         
         UIGraphicsBeginImageContext(self.bounds.size)
@@ -140,8 +141,19 @@ class GameView: UIView{
     }
     
     func initBlock() {
-        let rand = Int(arc4random()) % blockArray.count
-        currentBlock = blockArray[rand]
+        currentBlock = blockArray[nextBlockID]
+        nextBlockID = Int(arc4random()) % blockArray.count
+        
+        let nextBlock = blockArray[nextBlockID]
+        
+        CTX?.setFillColor(UIColor.white.cgColor)
+        CTX?.fill(CGRect(x: 270, y: 180, width: 70, height: 70))
+        for block in nextBlock {
+            CTX?.setFillColor(block.color)
+            CTX?.fill(CGRect(x: CGFloat(block.x * blockWidth) + strokeWidth + 180, y: CGFloat(block.y * blockWidth) + strokeWidth + 180, width: CGFloat(blockWidth) - strokeWidth * 2, height: CGFloat(blockWidth) - strokeWidth * 2))
+        }
+        image = UIGraphicsGetImageFromCurrentImageContext()
+        setNeedsDisplay()
     }
     
     func initColorStatus() {
