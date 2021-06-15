@@ -6,12 +6,22 @@
 //
 
 import UIKit
+import SnapKit
 
 class ViewController: UIViewController {
 
+    lazy var titleLabel: UILabel = {
+        var label = UILabel(frame: .zero)
+        label.text = "Tetris"
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        view.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
 
 
