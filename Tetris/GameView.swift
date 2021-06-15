@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol GameDelegate {
+protocol GameDelegate: AnyObject {
     func updateScore(score: Int)
     func updateSpeed(speed: Int)
     func updateGameState()
@@ -44,6 +44,8 @@ class GameView: UIView{
     var image: UIImage?
     
     var currentTimer: Timer?
+    
+    weak var delegate: GameDelegate? = nil
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -100,7 +102,7 @@ class GameView: UIView{
             ]
         ]
         
-        super.init()
+        super.init(frame: frame)
         
         
         CTX?.setFillColor(UIColor.white.cgColor)
@@ -148,10 +150,10 @@ class GameView: UIView{
     
     func startGame() {
         currentSpeed = 1
-        updateSpeed(speed: currentSpeed)
+        delegate?.updateSpeed(speed: currentSpeed)
         
         currentScore = 0
-        updateScore(score: currentScore)
+        delegate?.updateScore(score: currentScore)
         
         initColorStatus()
         
@@ -168,7 +170,7 @@ class GameView: UIView{
                 // block已经到最上面，游戏结束
                 if block.y == 1 {
                     currentTimer?.invalidate()
-                    updateGameState()
+                    delegate?.updateGameState()
                 }
                 // 标记每个方块当前位置
                 colorStatus[block.y][block.x] = block.color
@@ -192,11 +194,11 @@ class GameView: UIView{
             }
             if full {
                 currentScore += 100
-                updateScore(score: currentScore)
+                delegate?.updateScore(score: currentScore)
                 
                 if currentScore >= currentSpeed * currentSpeed * 100 {
                     currentSpeed += 1
-                    updateSpeed(speed: currentSpeed)
+                    delegate?.updateSpeed(speed: currentSpeed)
                     currentTimer?.invalidate()
                     currentTimer = Timer.scheduledTimer(timeInterval: TimeInterval(baseSpeed / Double(currentSpeed)), target: self, selector: #selector(moveDown), userInfo: nil, repeats: true)
                 }
@@ -314,19 +316,5 @@ class GameView: UIView{
             image = UIGraphicsGetImageFromCurrentImageContext()
             setNeedsDisplay()
         }
-    }
-}
-
-extension GameView: GameDelegate {
-    func updateScore(score: Int) {
-        <#code#>
-    }
-    
-    func updateSpeed(speed: Int) {
-        <#code#>
-    }
-    
-    func updateGameState() {
-        <#code#>
     }
 }
