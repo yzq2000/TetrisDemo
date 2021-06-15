@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 
 protocol GameDelegate: AnyObject {
     func updateScore(score: Int)
@@ -28,7 +29,7 @@ class GameView: UIView{
     let NOBLOCK = UIColor.white.cgColor
     let blockWidth: Int
     
-    let strokeWidth: CGFloat = 1
+    let strokeWidth: CGFloat = 3
     var CTX = UIGraphicsGetCurrentContext()
     
     let baseSpeed = 1.0
@@ -52,8 +53,6 @@ class GameView: UIView{
     }
     
     override init(frame: CGRect) {
-        
-        self.blockWidth = Int(frame.width) / columnCount
         self.blockArray = [
             [   // Z
                 TetrisBlock(x: columnCount / 2 - 1, y: 0, color: UIColor.red.cgColor),
@@ -83,7 +82,7 @@ class GameView: UIView{
             ],
             [   // J
                 TetrisBlock(x: columnCount / 2, y: 0, color: UIColor.orange.cgColor),
-                TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.orange.cgColor),
+                TetrisBlock(x: columnCount / 2, y: 1, color: UIColor.orange.cgColor),
                 TetrisBlock(x: columnCount / 2, y: 2, color: UIColor.orange.cgColor),
                 TetrisBlock(x: columnCount / 2 - 1, y: 2, color: UIColor.orange.cgColor)
                 
@@ -102,8 +101,12 @@ class GameView: UIView{
             ]
         ]
         
+        self.blockWidth = Int(frame.width) / columnCount
         super.init(frame: frame)
         
+        UIGraphicsBeginImageContext(self.bounds.size)
+        
+        CTX = UIGraphicsGetCurrentContext()
         
         CTX?.setFillColor(UIColor.white.cgColor)
         CTX?.fill(self.bounds)
@@ -124,7 +127,7 @@ class GameView: UIView{
             CTX?.addLine(to: CGPoint(x: col * blockWidth, y: rowCount * blockWidth))
         }
         CTX?.closePath()
-        CTX?.setStrokeColor(UIColor.darkGray.cgColor)
+        CTX?.setStrokeColor(UIColor.lightGray.cgColor)
         CTX?.setLineWidth(strokeWidth)
         CTX?.strokePath()
     }
@@ -140,12 +143,8 @@ class GameView: UIView{
     }
     
     func initColorStatus() {
-        for row in 0..<rowCount {
-            for col in 0..<columnCount {
-                CTX?.setFillColor(NOBLOCK)
-                CTX?.fill((CGRect(x: CGFloat(col * blockWidth) + strokeWidth, y: CGFloat(row * blockWidth) + strokeWidth, width: CGFloat(blockWidth) - strokeWidth * 2, height: CGFloat(blockWidth) - strokeWidth * 2)))
-            }
-        }
+        let tempRow = Array.init(repeating: NOBLOCK, count: columnCount)
+        colorStatus = Array.init(repeating: tempRow, count: rowCount)
     }
     
     func startGame() {
@@ -212,15 +211,6 @@ class GameView: UIView{
         }
     }
     
-    func drawBlock() {
-        for row in 0..<rowCount {
-            for col in 0..<columnCount {
-                CTX?.setFillColor(colorStatus[row][col])
-                CTX?.fill((CGRect(x: CGFloat(col * blockWidth) + strokeWidth, y: CGFloat(row * blockWidth) + strokeWidth, width: CGFloat(blockWidth) - strokeWidth * 2, height: CGFloat(blockWidth) - strokeWidth * 2)))
-            }
-        }
-    }
-    
     func moveLeft() {
         if couldMove(dirX: -1, dirY: 0) {
             moveOneStep(dirX: -1, dirY: 0)
@@ -235,43 +225,6 @@ class GameView: UIView{
         }
         image = UIGraphicsGetImageFromCurrentImageContext()
         setNeedsDisplay()
-    }
-    
-    func couldMove(dirX: Int, dirY: Int) -> Bool {
-        for block in currentBlock {
-            // 超出左右边界
-            if block.x + dirX >= columnCount || block.x + dirX < 0 {
-                return false
-            }
-            // 超出下边界
-            if block.y + dirY >= rowCount {
-                return false
-            }
-            // 旁边的block不为空
-            if colorStatus[block.y][block.x + dirX] != NOBLOCK {
-                return false
-            }
-        }
-        return true
-    }
-    
-    func moveOneStep(dirX: Int, dirY: Int) {
-        drawBlock()
-        
-        for block in currentBlock {
-            CTX?.setFillColor(UIColor.white.cgColor)
-            CTX?.fill(CGRect(x: CGFloat(block.x * blockWidth) + strokeWidth, y: CGFloat(block.y * blockWidth) + strokeWidth, width: CGFloat(blockWidth) - strokeWidth * 2, height: CGFloat(blockWidth) - strokeWidth * 2))
-        }
-        
-        for i in 0..<currentBlock.count {
-            currentBlock[i].x += dirX
-            currentBlock[i].y += dirY
-        }
-        
-        for block in currentBlock {
-            CTX?.setFillColor(block.color)
-            CTX?.fill(CGRect(x: CGFloat(block.x * blockWidth) + strokeWidth, y: CGFloat(block.y * blockWidth) + strokeWidth, width: CGFloat(blockWidth) - strokeWidth * 2, height: CGFloat(blockWidth) - strokeWidth * 2))
-        }
     }
     
     func rotate() {
@@ -291,7 +244,7 @@ class GameView: UIView{
             }
         }
         if couldRotate {
-            drawBlock()
+            drawAllBlocks()
             
             for block in currentBlock {
                 CTX?.setFillColor(UIColor.white.cgColor)
