@@ -8,6 +8,14 @@
 import UIKit
 
 extension GameView {
+    func stopTimer() {
+        currentTimer?.invalidate()
+    }
+    
+    func startTimer() {
+        currentTimer = Timer.scheduledTimer(timeInterval: TimeInterval(baseSpeed / Double(currentSpeed)), target: self, selector: #selector(moveDown), userInfo: nil, repeats: true)
+    }
+    
     func couldMove(dirX: Int, dirY: Int) -> Bool {
         for block in currentBlock {
             // 超出左右边界

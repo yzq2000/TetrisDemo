@@ -10,7 +10,7 @@ import UIKit
 class GameViewController: UIViewController{
     let paddingRight: CGFloat = 100
     let paddingUp: CGFloat = 150
-    let paddingDown: CGFloat = 150
+    let paddingDown: CGFloat = 250
     let textHeight:CGFloat = 30
     let btnWidth: CGFloat = 60
     let spacingWidth: CGFloat = 20 // == paddingLeft
@@ -89,7 +89,11 @@ class GameViewController: UIViewController{
     }()
     
     lazy var titleLabel: UILabel = {
-        var label = UILabel(frame: .zero)
+        let x: CGFloat = UIScreen.main.bounds.width * 0.5 - 50
+        let y: CGFloat = paddingUp - 65
+        let width: CGFloat = 100
+        let height: CGFloat = 30
+        var label = UILabel(frame: CGRect(x: x, y: y, width: width, height: height))
         label.text = "Tetris"
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 36)
@@ -138,6 +142,17 @@ class GameViewController: UIViewController{
         return label
     }()
     
+    lazy var authorLabel: UILabel = {
+        let x: CGFloat = 0
+        let y: CGFloat = UIScreen.main.bounds.height - 100
+        let width: CGFloat = UIScreen.main.bounds.width
+        let height: CGFloat = 30
+        var label = UILabel(frame: CGRect(x: x, y: y, width: width, height: height))
+        label.text = "created by Vibrant on 2021-6-15"
+        label.textAlignment = .center
+        return label
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -156,6 +171,7 @@ class GameViewController: UIViewController{
         view.addSubview(scoreNumberLabel)
         view.addSubview(speedTextLabel)
         view.addSubview(speedNumberLabel)
+        view.addSubview(authorLabel)
         
         gameGridView.startGame()
     }

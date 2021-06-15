@@ -37,17 +37,50 @@ extension GameViewController {
     }
     
     @objc func pauseBtnClicked() {
-        gameGridView.startGame()
+        if gameGridView.currentTimer?.isValid == true {
+            gameGridView.stopTimer()
+            gameGridView.isPausing = true
+            leftBtn.isEnabled = false
+            downBtn.isEnabled = false
+            rightBtn.isEnabled = false
+            rotateBtn.isEnabled = false
+        } else {
+            gameGridView.startTimer()
+            gameGridView.isPausing = false
+            leftBtn.isEnabled = true
+            downBtn.isEnabled = true
+            rightBtn.isEnabled = true
+            rotateBtn.isEnabled = true
+        }
     }
     
     @objc func backBtnClicked() {
-        navigationController?.popViewController(animated: true)
+        gameGridView.stopTimer()
+        let alert = UIAlertController(title: "Exit", message: "R U sure to Exit? Game progress will not be saved.", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
+        let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            if self.gameGridView.isPausing == false {
+                self.gameGridView.startTimer()
+            }
+        }
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        self.navigationController?.present(alert, animated: true, completion: nil)
     }
     
     @objc func restartBtnClicked() {
+        gameGridView.stopTimer()
         let alert = UIAlertController(title: "Restart", message: "Would U like to restart a game?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Yes", style: .default, handler: nil)
-        let noAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            self.gameGridView.startGame()
+        }
+        let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            if self.gameGridView.isPausing == false {
+                self.gameGridView.startTimer()
+            }
+        }
         alert.addAction(yesAction)
         alert.addAction(noAction)
         self.navigationController?.present(alert, animated: true, completion: nil)
@@ -65,8 +98,12 @@ extension GameViewController: GameDelegate {
     
     func updateGameState() {
         let alert = UIAlertController(title: "Game Over", message: "Would U like to restart a game?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "Yes", style: .default, handler: nil)
-        let noAction = UIAlertAction(title: "No", style: .cancel, handler: nil)
+        let yesAction = UIAlertAction(title: "Yes", style: .default) { _ in
+            self.gameGridView.startGame()
+        }
+        let noAction = UIAlertAction(title: "No", style: .cancel) { _ in
+            self.navigationController?.popViewController(animated: true)
+        }
         alert.addAction(yesAction)
         alert.addAction(noAction)
         self.navigationController?.present(alert, animated: true, completion: nil)

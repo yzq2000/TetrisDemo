@@ -22,7 +22,7 @@ class HelpViewController: UIViewController {
     
     lazy var authorLabel: UILabel = {
         var label = UILabel()
-        label.text = "created by Vibrant on 20021-6-15"
+        label.text = "created by Vibrant on 2021-6-15"
         return label
     }()
     

@@ -25,11 +25,11 @@ struct TetrisBlock {
 
 class GameView: UIView{
     let columnCount = 15
-    let rowCount = 22
+    let rowCount = 24
     let NOBLOCK = UIColor.white.cgColor
     let blockWidth: Int
     
-    let strokeWidth: CGFloat = 3
+    let strokeWidth: CGFloat = 1
     var CTX = UIGraphicsGetCurrentContext()
     
     let baseSpeed = 1.0
@@ -45,6 +45,8 @@ class GameView: UIView{
     var image: UIImage?
     
     var currentTimer: Timer?
+    
+    var isPausing: Bool = false
     
     weak var delegate: GameDelegate? = nil
     
@@ -158,7 +160,7 @@ class GameView: UIView{
         
         initBlock()
         
-        currentTimer = Timer.scheduledTimer(timeInterval: TimeInterval(baseSpeed / Double(currentSpeed)), target: self, selector: #selector(moveDown), userInfo: nil, repeats: true)
+        startTimer()
     }
     
     @objc func moveDown() {
@@ -198,8 +200,8 @@ class GameView: UIView{
                 if currentScore >= currentSpeed * currentSpeed * 100 {
                     currentSpeed += 1
                     delegate?.updateSpeed(speed: currentSpeed)
-                    currentTimer?.invalidate()
-                    currentTimer = Timer.scheduledTimer(timeInterval: TimeInterval(baseSpeed / Double(currentSpeed)), target: self, selector: #selector(moveDown), userInfo: nil, repeats: true)
+                    stopTimer()
+                    startTimer()
                 }
                 
                 for newRow in (1...row).reversed() {
