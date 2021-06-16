@@ -8,6 +8,26 @@
 import UIKit
 
 extension GameViewController {
+    
+    @objc func startTimerLeft() {
+        timer = Timer(timeInterval: TimeInterval(0.1), target: self, selector: #selector(leftBtnClicked), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: .common)
+    }
+    
+    @objc func startTimerRight() {
+        timer = Timer(timeInterval: TimeInterval(0.1), target: self, selector: #selector(rightBtnClicked), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: .common)
+    }
+    
+    @objc func startTimerDown() {
+        timer = Timer(timeInterval: TimeInterval(0.1), target: self, selector: #selector(downBtnClicked), userInfo: nil, repeats: true)
+        RunLoop.current.add(timer!, forMode: .common)
+    }
+    
+    @objc func stopTimer() {
+        timer?.invalidate()
+    }
+    
     @objc func leftBtnClicked() {
         gameGridView.moveLeft()
     }

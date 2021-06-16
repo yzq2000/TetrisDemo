@@ -15,6 +15,8 @@ class GameViewController: UIViewController{
     let btnWidth: CGFloat = 60
     let spacingWidth: CGFloat = 20 // == paddingLeft
     
+    var timer: Timer?
+    
     lazy var gameGridView: GameView = {
         let x = spacingWidth
         let y = paddingUp
@@ -30,6 +32,11 @@ class GameViewController: UIViewController{
         var btn = UIButton(frame: CGRect(x: x, y: y, width: btnWidth, height: btnWidth))
         btn.setImage(UIImage(named: "icon_left"), for: .normal)
         btn.addTarget(self, action: #selector(leftBtnClicked), for: .touchUpInside)
+        // 长按
+        btn.addTarget(self, action: #selector(startTimerLeft), for: .touchDown)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchCancel)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpOutside)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpInside)
         return btn
     }()
     
@@ -39,6 +46,11 @@ class GameViewController: UIViewController{
         var btn = UIButton(frame: CGRect(x: x, y: y, width: btnWidth, height: btnWidth))
         btn.setImage(UIImage(named: "icon_right"), for: .normal)
         btn.addTarget(self, action: #selector(rightBtnClicked), for: .touchUpInside)
+        // 长按
+        btn.addTarget(self, action: #selector(startTimerRight), for: .touchDown)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchCancel)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpOutside)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpInside)
         return btn
     }()
     
@@ -48,6 +60,11 @@ class GameViewController: UIViewController{
         var btn = UIButton(frame: CGRect(x: x, y: y, width: btnWidth, height: btnWidth))
         btn.setImage(UIImage(named: "icon_down"), for: .normal)
         btn.addTarget(self, action: #selector(downBtnClicked), for: .touchUpInside)
+        // 长按
+        btn.addTarget(self, action: #selector(startTimerDown), for: .touchDown)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchCancel)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpOutside)
+        btn.addTarget(self, action: #selector(stopTimer), for: .touchUpInside)
         return btn
     }()
 
