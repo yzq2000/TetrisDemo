@@ -209,6 +209,7 @@ class GameView: UIView{
                 currentScore += 100
                 delegate?.updateScore(score: currentScore)
                 
+                // 速度与分数正相关
                 if currentScore >= currentSpeed * currentSpeed * 100 {
                     currentSpeed += 1
                     delegate?.updateSpeed(speed: currentSpeed)
@@ -216,6 +217,7 @@ class GameView: UIView{
                     startTimer()
                 }
                 
+                // 消去满行
                 for newRow in (1...row).reversed() {
                     for col in 0..<columnCount {
                         colorStatus[newRow][col] = colorStatus[newRow - 1][col]
